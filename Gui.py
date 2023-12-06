@@ -18,6 +18,10 @@ light_var = tk.IntVar()
 medium_var = tk.IntVar()
 heavy_var = tk.IntVar()
 
+i_var = tk.IntVar()
+ii_var = tk.IntVar()
+iii_var = tk.IntVar()
+
 # populate list with csv rows
 with open('MANUFACTURER.csv') as csv_file:
     reader = csv.reader(csv_file, delimiter=',')
@@ -27,52 +31,73 @@ with open('MANUFACTURER.csv') as csv_file:
         plane_row_list.append(row)
     # print(plane_row_list)
 
+def filter_via_properties():
+    # Initialize the filtered list inside the function to avoid unexpected behavior
+    filtered_plane_list = []
+
+    # Clear the list box before populating it with filtered items
+    list_box.delete(0, tk.END)
+
+    for plane_row in plane_row_list:
+        aircraft_type = plane_row[1]  # Assuming the aircraft type is at index 0 in the row
+        weight = plane_row[2]  # Assuming the weight is at index 1 in the row
+        size = plane_row[3]  # Assuming the size is at index 2 in the row
+
+        # Check if any aircraft type checkbox is selected
+        if (fw_var.get() and "Fixed-wing" in aircraft_type) or \
+           (heli_var.get() and "Helicopter" in aircraft_type) or \
+           (gyro_var.get() and "Gyrocopter" in aircraft_type):
+            # Check for weight filters only if the corresponding type checkbox is selected
+            if (light_var.get() and ("Light" in weight or "Light " in weight)) or \
+               (medium_var.get() and ("Medium" in weight or "Medium " in weight)) or \
+               (heavy_var.get() and ("Heavy" in weight or "Heavy " in weight)):
+                # Check for size filters only if the corresponding type checkbox is selected
+                if (("I" in size or "I " in size) and i_var.get()) or \
+                   (("II" in size or "II " in size) and ii_var.get()) or \
+                   (("III" in size or "III " in size) and iii_var.get()):
+                    # Append the row to the filtered list
+                    filtered_plane_list.append(plane_row)
+
+    # Populate the list box with the filtered items
+    for index, plane_row in enumerate(filtered_plane_list):
+        list_box.insert(index, plane_row)
+
+    print("Added " + str(filtered_plane_list))
+
+
 
 # Filter functions
-def filter_via_properties():
-    if fw_var or heli_var or gyro_var or light_var or medium_var or heavy_var:
-
-        filtered_plane_list.clear()
-        list_box.delete(0, tk.END)
-
-        for plane_row in plane_row_list:
-            if fw_var.get():
-                if "Fixed-wing" in plane_row:
-                    filtered_plane_list.append(plane_row)
-            if heli_var.get():
-                if "Helicopter" in plane_row:
-                    filtered_plane_list.append(plane_row)
-            if gyro_var.get():
-                if "Gyrocopter" in plane_row:
-                    filtered_plane_list.append(plane_row)
-            if light_var.get():
-                if ("Light" in plane_row or "Light " in plane_row) and plane_row not in filtered_plane_list:
-                    filtered_plane_list.append(plane_row)
-            if medium_var.get():
-                if ("Medium" in plane_row or "Medium " in plane_row) and plane_row not in filtered_plane_list:
-                    filtered_plane_list.append(plane_row)
-            if heavy_var.get():
-                if ("Heavy" in plane_row or "Heavy " in plane_row) and plane_row not in filtered_plane_list:
-                    filtered_plane_list.append(plane_row)
-
-        for index, plane_row in enumerate(filtered_plane_list):
-            list_box.insert(index, plane_row)
-        print("added " + str(filtered_plane_list))
-    else:
-        list_box.delete(0, tk.END)
-    # else:
-    #     # create a copy of filtered_plane_list before iterating and modifying it
-    #     # TODO: Get vehicle class items from plane row list
-    #     copy_plane_row_list = list(plane_row_list)
-    #     for plane_row in copy_plane_row_list:
-    #         if prop_str in plane_row or prop_str + ' ' in plane_row:
-    #             # filtered_plane_list.remove(plane_row)
-    #             # convert plane_row to a tuple before finding the index
-    #             plane_row_tuple = tuple(plane_row)
-    #             idx = list_box.get(0, tk.END).index(plane_row_tuple)
-    #             # delete the item at the found index
-    #             list_box.delete(idx)
-    #     print("removed " + prop_str)
+# def filter_via_properties():
+#     if fw_var or heli_var or gyro_var or light_var or medium_var or heavy_var:
+#
+#         filtered_plane_list.clear()
+#         list_box.delete(0, tk.END)
+#
+#         for plane_row in plane_row_list:
+#             if fw_var.get():
+#                 if "Fixed-wing" in plane_row:
+#                     filtered_plane_list.append(plane_row)
+#             if heli_var.get():
+#                 if "Helicopter" in plane_row:
+#                     filtered_plane_list.append(plane_row)
+#             if gyro_var.get():
+#                 if "Gyrocopter" in plane_row:
+#                     filtered_plane_list.append(plane_row)
+#             if light_var.get():
+#                 if ("Light" in plane_row or "Light " in plane_row) and plane_row not in filtered_plane_list:
+#                     filtered_plane_list.append(plane_row)
+#             if medium_var.get():
+#                 if ("Medium" in plane_row or "Medium " in plane_row) and plane_row not in filtered_plane_list:
+#                     filtered_plane_list.append(plane_row)
+#             if heavy_var.get():
+#                 if ("Heavy" in plane_row or "Heavy " in plane_row) and plane_row not in filtered_plane_list:
+#                     filtered_plane_list.append(plane_row)
+#
+#         for index, plane_row in enumerate(filtered_plane_list):
+#             list_box.insert(index, plane_row)
+#         print("added " + str(filtered_plane_list))
+#     else:
+#         list_box.delete(0, tk.END)
 
 
 tk.Label(frm, text="Class").grid(column=0, row=0)
