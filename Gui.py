@@ -31,7 +31,9 @@ with open('MANUFACTURER.csv') as csv_file:
 # Filter functions
 def filter_via_properties():
     if fw_var or heli_var or gyro_var or light_var or medium_var or heavy_var:
+
         filtered_plane_list.clear()
+        list_box.delete(0, tk.END)
 
         for plane_row in plane_row_list:
             if fw_var.get():
@@ -44,18 +46,20 @@ def filter_via_properties():
                 if "Gyrocopter" in plane_row:
                     filtered_plane_list.append(plane_row)
             if light_var.get():
-                if "Light" or "Light " in plane_row:
+                if ("Light" in plane_row or "Light " in plane_row) and plane_row not in filtered_plane_list:
                     filtered_plane_list.append(plane_row)
             if medium_var.get():
-                if "Medium" or "Medium " in plane_row:
+                if ("Medium" in plane_row or "Medium " in plane_row) and plane_row not in filtered_plane_list:
                     filtered_plane_list.append(plane_row)
             if heavy_var.get():
-                if "Heavy" or "Heavy" in plane_row:
+                if ("Heavy" in plane_row or "Heavy " in plane_row) and plane_row not in filtered_plane_list:
                     filtered_plane_list.append(plane_row)
 
         for index, plane_row in enumerate(filtered_plane_list):
             list_box.insert(index, plane_row)
         print("added " + str(filtered_plane_list))
+    else:
+        list_box.delete(0, tk.END)
     # else:
     #     # create a copy of filtered_plane_list before iterating and modifying it
     #     # TODO: Get vehicle class items from plane row list
