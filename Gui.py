@@ -1,31 +1,65 @@
 import csv
 import tkinter as tk
 
+plane_row_list = []
+displayed_planes = []
+
+# populate list with csv rows
+with open('MANUFACTURER.csv') as csv_file:
+    reader = csv.reader(csv_file, delimiter=',')
+    for index, row in enumerate(reader):
+        if index == 0:
+            continue
+        plane_row_list.append(', '.join(row))
+    print(plane_row_list)
+
 
 # Filter functions
 def filter_fixed_wing(event):
-    pass
+    if fw_var == 0:
+        # remove fixed wing
+        for plane_model in displayed_planes:
+            if plane_model.__contains__("Fixed-wing"):
+                displayed_planes.remove(plane_model)
+                # list_box.delete(plane_model)
+        # list_box.update()
+    else:
+        for plane_row in plane_row_list:
+            if plane_row.__contains__("Fixed-wing"):
+                displayed_planes.append(plane_row)
+        for index, displayed_plane in enumerate(displayed_planes):
+            list_box.insert(index, ''.join(displayed_plane))
+    print("yiss")
+
+
 
 def filter_(event):
     pass
 
-def filter_(event):
-    pass
 
 def filter_(event):
     pass
 
-def filter_(event):
-    pass
 
 def filter_(event):
     pass
 
-def filter_(event):
-    pass
 
 def filter_(event):
     pass
+
+
+def filter_(event):
+    pass
+
+
+def filter_(event):
+    pass
+
+
+def filter_(event):
+    pass
+
 
 def filter_(event):
     pass
@@ -33,13 +67,14 @@ def filter_(event):
 
 window = tk.Tk()
 window.title("Runway Checker")
-
 frm = tk.Frame(window, padx=10, pady=10)
 frm.grid()
 
+fw_var = tk.IntVar()
+
 tk.Label(frm, text="Class").grid(column=0, row=0)
 
-fw_check = tk.Checkbutton(frm, text="Fixed-wing")
+fw_check = tk.Checkbutton(frm, text="Fixed-wing", variable=fw_var)
 h_check = tk.Checkbutton(frm, text="Helicopter")
 gc_check = tk.Checkbutton(frm, text="Gyro-copter")
 
@@ -50,9 +85,9 @@ gc_check.grid(column=0, row=3)
 
 tk.Label(frm, text="ICAO WTC").grid(column=0, row=5)
 
-light_check = tk.Checkbutton(frm, text="Light").grid(column=0, row=6)
-med_check = tk.Checkbutton(frm, text="Medium").grid(column=0, row=7)
-heavy_check = tk.Checkbutton(frm, text="Heavy").grid(column=0, row=8)
+# light_check = tk.Checkbutton(frm, text="Light").grid(column=0, row=6)
+# med_check = tk.Checkbutton(frm, text="Medium").grid(column=0, row=7)
+# heavy_check = tk.Checkbutton(frm, text="Heavy").grid(column=0, row=8)
 
 tk.Label(frm, text="SRS").grid(column=0, row=10)
 tk.Checkbutton(frm, text="I").grid(column=0, row=11)
@@ -62,20 +97,6 @@ tk.Checkbutton(frm, text="III").grid(column=0, row=13)
 list_box = tk.Listbox(window)
 
 list_box.grid(column=1, row=0)
-
-with open('MANUFACTURER.csv') as csv_file:
-    reader = csv.reader(csv_file)
-    for index, row in enumerate(reader):
-        list_box.insert(index, ''.join(row[0]))
-
-
-def show_lightweight_planes(event):
-    list_box.insert("200T Plane")
-    list_box.insert("300T Plane")
-    list_box.insert("100T Plane")
-    list_box.insert("400T Plane")
-    list_box.insert("500T Plane")
-
 
 # Start the event loop.
 window.mainloop()
