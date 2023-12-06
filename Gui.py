@@ -15,21 +15,22 @@ with open('MANUFACTURER.csv') as csv_file:
 
 
 # Filter functions
-def filter_fixed_wing(event):
-    if fw_var == 0:
+def filter_fixed_wing():
+    print(fw_var.get())
+    if fw_var.get() == 0:
         # remove fixed wing
+
         for plane_model in displayed_planes:
-            if plane_model.__contains__("Fixed-wing"):
+            if plane_model.contains("Fixed-wing"):
                 displayed_planes.remove(plane_model)
-                # list_box.delete(plane_model)
-        # list_box.update()
+                idx = list_box.get(0, tk.END).index(plane_model)
+                list_box.delete(idx)
     else:
         for plane_row in plane_row_list:
-            if plane_row.__contains__("Fixed-wing"):
+            if plane_row.contains("Fixed-wing"):
                 displayed_planes.append(plane_row)
         for index, displayed_plane in enumerate(displayed_planes):
-            list_box.insert(index, ''.join(displayed_plane))
-    print("yiss")
+            list_box.insert(index, displayed_plane)
 
 
 
@@ -74,12 +75,14 @@ fw_var = tk.IntVar()
 
 tk.Label(frm, text="Class").grid(column=0, row=0)
 
-fw_check = tk.Checkbutton(frm, text="Fixed-wing", variable=fw_var)
+fw_check = tk.Checkbutton(
+    frm, text="Fixed-wing", variable=fw_var, command=filter_fixed_wing
+)
 h_check = tk.Checkbutton(frm, text="Helicopter")
 gc_check = tk.Checkbutton(frm, text="Gyro-copter")
 
 fw_check.grid(column=0, row=1)
-fw_check.bind('<Button-1>', filter_fixed_wing)
+# fw_check.bind('<Button-1>', filter_fixed_wing)
 h_check.grid(column=0, row=2)
 gc_check.grid(column=0, row=3)
 
