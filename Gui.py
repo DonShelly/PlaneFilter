@@ -52,8 +52,8 @@ def filter_via_properties():
                (medium_var.get() and ("Medium" in weight or "Medium " in weight)) or \
                (heavy_var.get() and ("Heavy" in weight or "Heavy " in weight)):
                 # Check for size filters only if the corresponding type checkbox is selected
-                if (("I" in size or "I " in size) and i_var.get()) or \
-                   (("II" in size or "II " in size) and ii_var.get()) or \
+                if ((("I" in size or "I " in size) and i_var.get()) and not ("II" in size or "III" in size)) or \
+                   ((("II" in size or "II " in size) and ii_var.get()) and not "III" in size) or \
                    (("III" in size or "III " in size) and iii_var.get()):
                     # Append the row to the filtered list
                     filtered_plane_list.append(plane_row)
@@ -61,43 +61,12 @@ def filter_via_properties():
     # Populate the list box with the filtered items
     for index, plane_row in enumerate(filtered_plane_list):
         list_box.insert(index, plane_row)
+    if (fw_var.get() or heli_var.get() or gyro_var) and (light_var or medium_var or heavy_var) and not (i_var.get() or ii_var.get() or iii_var.get()):
+        list_box.insert(0, "Please select all options")
+    if len(list_box.get(0, tk.END)) == 0:
+        list_box.insert(0, "No results")
 
     print("Added " + str(filtered_plane_list))
-
-
-
-# Filter functions
-# def filter_via_properties():
-#     if fw_var or heli_var or gyro_var or light_var or medium_var or heavy_var:
-#
-#         filtered_plane_list.clear()
-#         list_box.delete(0, tk.END)
-#
-#         for plane_row in plane_row_list:
-#             if fw_var.get():
-#                 if "Fixed-wing" in plane_row:
-#                     filtered_plane_list.append(plane_row)
-#             if heli_var.get():
-#                 if "Helicopter" in plane_row:
-#                     filtered_plane_list.append(plane_row)
-#             if gyro_var.get():
-#                 if "Gyrocopter" in plane_row:
-#                     filtered_plane_list.append(plane_row)
-#             if light_var.get():
-#                 if ("Light" in plane_row or "Light " in plane_row) and plane_row not in filtered_plane_list:
-#                     filtered_plane_list.append(plane_row)
-#             if medium_var.get():
-#                 if ("Medium" in plane_row or "Medium " in plane_row) and plane_row not in filtered_plane_list:
-#                     filtered_plane_list.append(plane_row)
-#             if heavy_var.get():
-#                 if ("Heavy" in plane_row or "Heavy " in plane_row) and plane_row not in filtered_plane_list:
-#                     filtered_plane_list.append(plane_row)
-#
-#         for index, plane_row in enumerate(filtered_plane_list):
-#             list_box.insert(index, plane_row)
-#         print("added " + str(filtered_plane_list))
-#     else:
-#         list_box.delete(0, tk.END)
 
 
 tk.Label(frm, text="Class").grid(column=0, row=0)
@@ -122,9 +91,13 @@ heavy_check.grid(column=0, row=8)
 
 
 tk.Label(frm, text="SRS").grid(column=0, row=10)
-tk.Checkbutton(frm, text="I").grid(column=0, row=11)
-tk.Checkbutton(frm, text="II").grid(column=0, row=12)
-tk.Checkbutton(frm, text="III").grid(column=0, row=13)
+srs_i = tk.Checkbutton(frm, text="I", variable=i_var, command=filter_via_properties)
+srs_ii = tk.Checkbutton(frm, text="II", variable=ii_var, command=filter_via_properties)
+srs_iii = tk.Checkbutton(frm, text="III", variable=iii_var, command=filter_via_properties)
+
+srs_i.grid(column=0, row=11)
+srs_ii.grid(column=0, row=12)
+srs_iii.grid(column=0, row=13)
 
 list_box = tk.Listbox(window)
 
