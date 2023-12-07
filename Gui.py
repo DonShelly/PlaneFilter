@@ -5,7 +5,6 @@ plane_row_list = []
 filtered_plane_list = []
 temp_filtered_plane_list = []
 
-
 window = tk.Tk()
 window.title("Runway Checker")
 frm = tk.Frame(window, padx=10, pady=10)
@@ -31,6 +30,7 @@ with open('MANUFACTURER.csv') as csv_file:
         plane_row_list.append(row)
     # print(plane_row_list)
 
+
 def filter_via_properties():
     # Initialize the filtered list inside the function to avoid unexpected behavior
     filtered_plane_list = []
@@ -45,23 +45,26 @@ def filter_via_properties():
 
         # Check if any aircraft type checkbox is selected
         if (fw_var.get() and "Fixed-wing" in aircraft_type) or \
-           (heli_var.get() and "Helicopter" in aircraft_type) or \
-           (gyro_var.get() and "Gyrocopter" in aircraft_type):
+                (heli_var.get() and "Helicopter" in aircraft_type) or \
+                (gyro_var.get() and "Gyrocopter" in aircraft_type):
             # Check for weight filters only if the corresponding type checkbox is selected
             if (light_var.get() and ("Light" in weight or "Light " in weight)) or \
-               (medium_var.get() and ("Medium" in weight or "Medium " in weight)) or \
-               (heavy_var.get() and ("Heavy" in weight or "Heavy " in weight)):
+                    (medium_var.get() and ("Medium" in weight or "Medium " in weight)) or \
+                    (heavy_var.get() and ("Heavy" in weight or "Heavy " in weight)):
                 # Check for size filters only if the corresponding type checkbox is selected
                 if ((("I" in size or "I " in size) and i_var.get()) and not ("II" in size or "III" in size)) or \
-                   ((("II" in size or "II " in size) and ii_var.get()) and not "III" in size) or \
-                   (("III" in size or "III " in size) and iii_var.get()):
+                        ((("II" in size or "II " in size) and ii_var.get()) and not ("III" in size) and not ("I" in size)) or \
+                        (("III" in size or "III " in size) and iii_var.get()):
                     # Append the row to the filtered list
+                    filtered_plane_list.append(plane_row)
+                elif not (("I" in size or "I " in size) and i_var.get()) and not (("II" in size or "II " in size) and ii_var.get()):
                     filtered_plane_list.append(plane_row)
 
     # Populate the list box with the filtered items
     for index, plane_row in enumerate(filtered_plane_list):
         list_box.insert(index, plane_row)
-    if (fw_var.get() or heli_var.get() or gyro_var) and (light_var or medium_var or heavy_var) and not (i_var.get() or ii_var.get() or iii_var.get()):
+    if (fw_var.get() or heli_var.get() or gyro_var) and (light_var or medium_var or heavy_var) and not (
+            i_var.get() or ii_var.get() or iii_var.get()):
         list_box.insert(0, "Please select all options")
     if len(list_box.get(0, tk.END)) == 0:
         list_box.insert(0, "No results")
@@ -88,7 +91,6 @@ heavy_check = tk.Checkbutton(frm, text="Heavy", variable=heavy_var, command=filt
 light_check.grid(column=0, row=6)
 med_check.grid(column=0, row=7)
 heavy_check.grid(column=0, row=8)
-
 
 tk.Label(frm, text="SRS").grid(column=0, row=10)
 srs_i = tk.Checkbutton(frm, text="I", variable=i_var, command=filter_via_properties)
