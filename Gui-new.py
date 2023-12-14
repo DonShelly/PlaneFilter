@@ -1,7 +1,7 @@
 import csv
 import tkinter as tk
 
-plane_row_list = []
+raw_plane_row_list = []
 temp_filtered_plane_list = []
 
 # make first empty window
@@ -32,36 +32,40 @@ with open('MANUFACTURER.csv') as csv_file:
     for index, row in enumerate(reader):
         if index == 0:
             continue
-        plane_row_list.append(row)
+        raw_plane_row_list.append(row)
 
 
-# define(explain) function 
+# An operation to add a list of each filter to a master list
+def add_filtered_planes_to_master_list(plane_list, filtered_plane_list):
+    clean_list = []
+    for plane in plane_list:
+        clean_list.append(plane[0])
+    filtered_plane_list.append(plane_list)
+
+
+def join_and_dedupe_master_list(master_list):
+    return set(master_list[0]) | set(master_list[1]) | set(master_list[2])
+
+
+# define(explain) function
 def filter_via_properties():
     filtered_plane_list = []
 
     # Clear the list box before populating it with filtered items
     list_box.delete(0, tk.END)
 
-    for plane_row in plane_row_list:
-        aircraft_type = plane_row[1]
-        weight = plane_row[2]
-        size = plane_row[3]
+    fw_planes = filter(lambda plane: fw_var and "Fixed-wing" in plane, raw_plane_row_list)
+    heli_planes = filter(lambda plane: heli_var.get() and "Helicopter" in plane, raw_plane_row_list)
+    gyro_planes = filter(lambda plane: gyro_var.get() and "Gyrocopter" in plane, raw_plane_row_list)
 
-        # Check if any aircraft type checkbox is selected
-        # var - variable
-        if (fw_var.get() and "Fixed-wing" in aircraft_type) or \
-                (heli_var.get() and "Helicopter" in aircraft_type) or \
-                (gyro_var.get() and "Gyrocopter" in aircraft_type):
-            # Check for weight filters only if the corresponding type checkbox is selected
-            if (light_var.get() and ()) or \
-                    (medium_var.get() and ("Medium" in weight or "Medium " in weight)) or \
-                    (heavy_var.get() and ("Heavy" in weight or "Heavy " in weight)):
-                # Check for size filters only if the corresponding type checkbox is selected
-                if ((("I" in size or "I " in size) and i_var.get()) and not ("II" in size or "III" in size)) or \
-                        ((("II" in size or "II " in size) and ii_var.get()) and not "III" in size) or \
-                        (("III" in size or "III " in size) and iii_var.get()):
-                    # Append the row to the filtered list
-                    filtered_plane_list.append(plane_row[0])
+    light_planes = filter(lambda plane: light_var and ("Light" in plane or "Light " in plane), raw_plane_row_list)
+    heavy_planes = filter(lambda plane: heavy_var and ("Heavy" in plane or "Heavy " in plane), raw_plane_row_list)
+
+    add_filtered_planes_to_master_list(list(fw_planes), filtered_plane_list)
+    add_filtered_planes_to_master_list(list(heli_planes), filtered_plane_list)
+    add_filtered_planes_to_master_list(list(gyro_planes), filtered_plane_list)
+
+    join_and_dedupe_master_list(filtered_plane_list)
 
     # Populate the list box with the filtered items
     for index, plane_row in enumerate(filtered_plane_list):
