@@ -36,47 +36,73 @@ with open('MANUFACTURER.csv') as csv_file:
 
 
 # An operation to add a list of each filter to a master list
-def add_filtered_planes_to_master_list(plane_list, filtered_plane_list):
-    clean_list = []
+def add_filtered_planes_to_filter_list(plane_list, master_filtered_plane_list):
     for plane in plane_list:
-        clean_list.append(plane[0])
-    filtered_plane_list.append(plane_list)
+        # filtered_plane_list.append(plane[0])
+        master_filtered_plane_list.append(plane)
 
 
-def join_and_dedupe_master_list(master_list):
-    return set(master_list[0]) | set(master_list[1]) | set(master_list[2])
+def dedupe_master_list(master_filtered_plane_list):
+    last = object
 
+    for plane in master_filtered_plane_list:
+        if plane == last:
+            continue
+        yield plane
+        last = plane
 
-# define(explain) function
+def filter_icao_wtc(weight_bool, raw_plane_row_list):
+    if light_var.get() and ("Light" in plane or "Light " in plane)
+
 def filter_via_properties():
-    filtered_plane_list = []
+    class_filtered_plane_list = []
+    class_icao_wtc_filtered_plane_list = []
+    master_filtered_plane_list = []
 
     # Clear the list box before populating it with filtered items
     list_box.delete(0, tk.END)
 
-    fw_planes = filter(lambda plane: fw_var and "Fixed-wing" in plane, raw_plane_row_list)
+    fw_planes = filter(lambda plane: fw_var.get() and "Fixed-wing" in plane, raw_plane_row_list)
     heli_planes = filter(lambda plane: heli_var.get() and "Helicopter" in plane, raw_plane_row_list)
     gyro_planes = filter(lambda plane: gyro_var.get() and "Gyrocopter" in plane, raw_plane_row_list)
 
-    light_planes = filter(lambda plane: light_var and ("Light" in plane or "Light " in plane), raw_plane_row_list)
-    heavy_planes = filter(lambda plane: heavy_var and ("Heavy" in plane or "Heavy " in plane), raw_plane_row_list)
+    add_filtered_planes_to_filter_list(list(fw_planes), class_filtered_plane_list)
+    add_filtered_planes_to_filter_list(list(heli_planes), class_filtered_plane_list)
+    add_filtered_planes_to_filter_list(list(gyro_planes), class_filtered_plane_list)
 
-    add_filtered_planes_to_master_list(list(fw_planes), filtered_plane_list)
-    add_filtered_planes_to_master_list(list(heli_planes), filtered_plane_list)
-    add_filtered_planes_to_master_list(list(gyro_planes), filtered_plane_list)
 
-    join_and_dedupe_master_list(filtered_plane_list)
+    light_planes = filter(lambda plane: light_var.get() and ("Light" in plane or "Light " in plane), class_filtered_plane_list)
+    medium_planes = filter(lambda plane: medium_var.get() and ("Medium" in plane or "Medium " in plane), class_filtered_plane_list)
+    heavy_planes = filter(lambda plane: heavy_var.get() and ("Heavy" in plane or "Heavy " in plane), class_filtered_plane_list)
+
+    add_filtered_planes_to_filter_list(list(light_planes), class_icao_wtc_filtered_plane_list)
+    add_filtered_planes_to_filter_list(list(medium_planes), class_icao_wtc_filtered_plane_list)
+    add_filtered_planes_to_filter_list(list(heavy_planes), class_icao_wtc_filtered_plane_list)
+
+
+    i_planes = filter(lambda plane: i_var.get() and ("I" in plane or "I " in plane), class_icao_wtc_filtered_plane_list)
+    ii_planes = filter(lambda plane: ii_var.get() and ("II" in plane or "II " in plane), class_icao_wtc_filtered_plane_list)
+    iii_planes = filter(lambda plane: iii_var.get() and ("III" in plane or "III " in plane), class_icao_wtc_filtered_plane_list)
+
+
+    add_filtered_planes_to_filter_list(list(i_planes), master_filtered_plane_list)
+    add_filtered_planes_to_filter_list(list(ii_planes), master_filtered_plane_list)
+    add_filtered_planes_to_filter_list(list(iii_planes), master_filtered_plane_list)
+
+
+    dedupe_master_list(sorted(master_filtered_plane_list))
 
     # Populate the list box with the filtered items
-    for index, plane_row in enumerate(filtered_plane_list):
-        list_box.insert(index, plane_row)
+    for pl_index, plane in enumerate(master_filtered_plane_list):
+        list_box.insert(pl_index, plane)
+
     if (fw_var.get() or heli_var.get() or gyro_var) and (light_var or medium_var or heavy_var) and not (
             i_var.get() or ii_var.get() or iii_var.get()):
         list_box.insert(0, "Please select an option from each category")
     if len(list_box.get(0, tk.END)) == 0:
         list_box.insert(0, "No results")
 
-    print("Added " + str(filtered_plane_list))
+    print("Added " + str(master_filtered_plane_list))
 
 
 tk.Label(frm, text="Class", font='Helvetica 16 bold').grid(column=0, row=0, padx=10)
