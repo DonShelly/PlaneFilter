@@ -76,12 +76,9 @@ def filter_via_properties():
         lambda heavy_plane: heavy_var.get() and ("Heavy" in heavy_plane or "Heavy " in heavy_plane),
         class_filtered_plane_list)
 
-    # if len(class_icao_wtc_filtered_plane_list) == 0:
-    #     class_filtered_plane_list = master_filtered_plane_list
     add_filtered_planes_to_master_filter_list(list(light_planes), class_icao_wtc_filtered_plane_list)
     add_filtered_planes_to_master_filter_list(list(medium_planes), class_icao_wtc_filtered_plane_list)
     add_filtered_planes_to_master_filter_list(list(heavy_planes), class_icao_wtc_filtered_plane_list)
-
 
     i_planes = filter(
         lambda plane: i_var.get() and ("I" in plane or "I " in plane), class_icao_wtc_filtered_plane_list)
@@ -107,12 +104,8 @@ def filter_via_properties():
 
     # Populate the list box with the filtered items
     for pl_index, plane in enumerate(master_filtered_plane_list):
-        list_box.insert(pl_index, plane)
-        # list_box.insert(pl_index, plane[0])
+        list_box.insert(pl_index, plane[0])
 
-    # if (fw_var.get() or heli_var.get() or gyro_var) and (light_var or medium_var or heavy_var) and not (
-    #         i_var.get() or ii_var.get() or iii_var.get()):
-    #     list_box.insert(0, "Please select an option from each category")
     if len(master_filtered_plane_list) == 0:
         list_box.insert(0, "No results")
 
